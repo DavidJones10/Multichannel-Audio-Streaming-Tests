@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // Microphone setup for capturing audio from both channels
 const mic = new Microphone({
-  rate: 16000,   // Sampling rate
+  rate: SAMPLE_RATE,   // Sampling rate
   channels: 2,   // 2 channels (stereo)
   device: process.env.INPUT_DEVICE,  // Device name from .env
 });
