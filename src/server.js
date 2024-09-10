@@ -11,14 +11,14 @@ const wssChannel2 = new WebSocket.Server({ port: 8082 });
 const speakerChannel1 = new Speaker({
   channels: 1,        // Mono
   bitDepth: 16,       // 16-bit PCM
-  sampleRate: 16000,  // Sampling rate
+  sampleRate: process.env.SAMPLE_RATE,  // Sampling rate
 });
 
 // Speaker for Channel 2 playback
 const speakerChannel2 = new Speaker({
   channels: 1,        // Mono
   bitDepth: 16,
-  sampleRate: 16000,
+  sampleRate: process.env.SAMPLE_RATE,
 });
 
 // Handle connections on Channel 1
