@@ -1,5 +1,17 @@
 const WebSocket = require('ws');
 const Speaker = require('speaker');
+let channel1Buffer = []
+let channel2Buffer = []
+
+function writeToSpeaker(buffer, speaker){
+  if (buffer.length > 0){
+    const chunk = buffer.shift();
+    speaker.write(chunk);
+  }else{
+    const silence = Buffer.alloc(4096);
+    speaker.write(silence)
+  }
+}
 
 // Channel 1 Server
 const wssChannel1 = new WebSocket.Server({ port: 8081 });
@@ -27,12 +39,13 @@ wssChannel1.on('connection', (ws) => {
   
   ws.on('message', (data) => {
     // Play back audio on Channel 1
-    speakerChannel1.write(data);
+    channel1Buffer.push(data);
   });
 
   ws.on('close', () => {
     console.log('Channel 1: Client disconnected');
   });
+  setInterval(() => writeToSpeaker(channel1Buffer, speakerChannel1), 20);
 });
 
 // Handle connections on Channel 2
@@ -41,12 +54,13 @@ wssChannel2.on('connection', (ws) => {
   
   ws.on('message', (data) => {
     // Play back audio on Channel 2
-    speakerChannel2.write(data);
+    channel2Buffer.push(data);
   });
 
   ws.on('close', () => {
     console.log('Channel 2: Client disconnected');
   });
+  setInterval(() => writeToSpeaker(channel2Buffer, speakerChannel2), 20);
 });
 
 console.log('Server running: Channel 1 on ws://localhost:8081, Channel 2 on ws://localhost:8082');
